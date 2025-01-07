@@ -1,6 +1,6 @@
 package com.iris.bookstore_api.mapper;
 
-import com.iris.bookstore_api.DTO.BookDTO;
+import com.iris.bookstore_api.dto.BookDTO;
 import com.iris.bookstore_api.model.Book;
 import org.springframework.stereotype.Component;
 

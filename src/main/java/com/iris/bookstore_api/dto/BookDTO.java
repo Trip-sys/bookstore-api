@@ -1,9 +1,11 @@
-package com.iris.bookstore_api.DTO;
+package com.iris.bookstore_api.dto;
 
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class BookDTO {
@@ -48,6 +50,7 @@ public class BookDTO {
         this.author = author;
     }
 
+
     public long getPrice() {
         return price;
     }
@@ -55,6 +58,4 @@ public class BookDTO {
     public void setPrice(long price) {
         this.price = price;
     }
-
-
 }

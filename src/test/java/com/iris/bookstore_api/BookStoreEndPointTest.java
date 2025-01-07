@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iris.bookstore_api.DTO.BookDTO;
+import com.iris.bookstore_api.dto.BookDTO;
 import com.iris.bookstore_api.mapper.BookMapper;
 import com.iris.bookstore_api.model.Book;
 import com.iris.bookstore_api.service.BookStoreService;
@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -79,6 +81,50 @@ public class BookStoreEndPointTest {
 
         // Verify interactions
         verify(bookStoreService, times(1)).getBookByBookId("123");
+    }
+
+    @Test
+    void testSaveBook() throws Exception {
+        // Mock the conversion and save logic
+        when(bookMapper.toBook(bookDTO)).thenReturn(new Book("123", "Test Book", "Author Name", 1200));
+        doNothing().when(bookStoreService).saveBook(any(Book.class));
+
+        // Perform the POST request and assert the response status is CREATED (201)
+        MvcResult result = mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDTO)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        // Verify that saveBook method was called once
+        verify(bookStoreService, times(1)).saveBook(any(Book.class));
+    }
+
+    @Test
+    void testSaveBookWithNegativePrice() throws Exception {
+        // Create BookDTO with negative price
+        BookDTO bookDTO = new BookDTO("123", "Test Book", "Author Name", -100);
+
+        // Perform the POST request and check the validation error
+        mockMvc.perform(
+                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                                .post("/books")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(bookDTO))
+                )
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()) // Expecting 400 Bad Request
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Book Price cannot be negative"));
+    }
+
+    @Test
+    void testDeleteBookFound() throws Exception {
+        // Perform DELETE request and verify the response
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/books/{id}", "123"))
+                .andExpect(status().isNoContent())  // Expect 204 No Content
+                .andExpect(content().string(""));
+
+        // Verify the service method was called once
+        verify(bookStoreService, times(1)).deleteBook("123");
     }
 
 

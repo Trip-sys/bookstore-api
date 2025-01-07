@@ -1,6 +1,6 @@
 package com.iris.bookstore_api.controller;
 
-import com.iris.bookstore_api.DTO.BookDTO;
+import com.iris.bookstore_api.dto.BookDTO;
 import com.iris.bookstore_api.mapper.BookMapper;
 import com.iris.bookstore_api.model.Book;
 import com.iris.bookstore_api.service.BookStoreService;
@@ -57,7 +57,7 @@ public class BookStoreEndPoint {
     }
 
     @DeleteMapping(value = "/books/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable String id) {
+    public ResponseEntity deleteBook(@PathVariable String id) {
          bookStoreService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }

@@ -7,17 +7,21 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 @ControllerAdvice
 public class GenericExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity handleValidationException(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getAllErrors()
                 .stream()
                 .map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(", "));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        Map<String, String> map = new HashMap<>();
+        map.put("error", errorMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
     }
 
     @ExceptionHandler(NoSuchElementException.class)

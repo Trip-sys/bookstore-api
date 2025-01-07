@@ -20,6 +20,13 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080  # Port your application listens on
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstore-config
+                  key: APP_ENV
+
           resources:
             limits:
               memory: "512Mi"
