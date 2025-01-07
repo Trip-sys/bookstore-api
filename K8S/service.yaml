@@ -1,0 +1,12 @@
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: bookstore-api-service
+  spec:
+    selector:
+      app: bookstore-api  # This should match the label in the Deployment
+    ports:
+      - protocol: TCP
+        port: 8080   # Port the service will expose
+        targetPort: 8080  # Port the container is listening on
+    type: ClusterIP  # Internal service type (default), you can change it to LoadBalancer for external access

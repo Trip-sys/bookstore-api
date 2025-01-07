@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookstore-api-deployment
+  labels:
+    app: bookstore-api
+spec:
+  replicas: 3  # Number of pods to run
+  selector:
+    matchLabels:
+      app: bookstore-api
+  template:
+    metadata:
+      labels:
+        app: bookstore-api
+    spec:
+      containers:
+        - name: bookstore-api
+          image: bookstore-api:latest  # Replace with your Docker image name
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080  # Port your application listens on
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
